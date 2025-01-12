@@ -29,6 +29,7 @@
     "apexcharts": "^4.2.0",
     "axios": "^1.7.9",
     "dayjs": "^1.11.13",
+    "dompurify": "^3.2.3",
     "lodash.debounce": "^4.0.8",
     "pinia": "^2.3.0",
     "pinia-persistence-plugin": "^0.0.5",

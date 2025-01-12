@@ -6,6 +6,7 @@ import { HistoryKey } from '@/constants/vuetorrent'
 import { comparators, formatData, formatTimeSec, openLink } from '@/helpers'
 import { useAddTorrentStore, useAppStore, useDialogStore, useSearchEngineStore, useVueTorrentStore } from '@/stores'
 import { SearchData, SearchResult } from '@/types/vuetorrent'
+import { sanitize } from '@/plugins/dompurify.ts'
 import { storeToRefs } from 'pinia'
 import { computed, onBeforeMount, onBeforeUnmount, ref } from 'vue'
 import { useRouter } from 'vue-router'
@@ -308,6 +309,9 @@ onBeforeUnmount(() => {
                 <v-text-field v-model="selectedTab.filters.title" density="compact" hide-details :label="t('searchEngine.filters.title.label')" />
               </v-col>
             </v-row>
+          </template>
+          <template v-slot:[`item.fileName`]="{ item }">
+            <span v-html="sanitize(item.fileName)"></span>
           </template>
           <template v-slot:[`item.fileSize`]="{ item }">
             {{ formatData(item.fileSize, useBinarySize) }}
