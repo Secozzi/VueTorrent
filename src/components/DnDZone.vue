@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import AddTorrentDialog from '@/components/Dialogs/AddTorrentDialog.vue'
+import { useI18nUtils } from '@/composables'
 import { useAddTorrentStore, useAppStore, useDialogStore, useTorrentStore } from '@/stores'
 import { useDropZone } from '@vueuse/core'
 import { onMounted, onUnmounted, ref } from 'vue'
-import { useI18nUtils } from '@/composables'
 import { useRoute } from 'vue-router'
 import { toast } from 'vue3-toastify'
 
@@ -45,6 +45,26 @@ function extractDropData(files: File[] | null, dataTransfer: DataTransfer): [Fil
   return [torrentFiles, links]
 }
 
+function extractPasteData(event: ClipboardEvent): [File[], string[]] {
+  const clipboardData = event.clipboardData
+  if (!clipboardData) {
+    return [[], []]
+  }
+
+  const files: File[] = Array.from(clipboardData.items)
+    .filter(item => item.kind === 'file')
+    .map(item => item.getAsFile())
+    .filter((file): file is File => !!file)
+    .filter(file => file.type === 'application/x-bittorrent' || file.name.endsWith('.torrent'))
+
+  const links = clipboardData
+    .getData('text/plain')
+    .split('\n')
+    .filter(link => link.startsWith('magnet:') || link.startsWith('http'))
+
+  return [files, links]
+}
+
 function onQueueDrop(files: File[] | null, event: DragEvent) {
   if (!checkDropEvent(event)) return
 
@@ -77,10 +97,30 @@ function onDownloadDrop(files: File[] | null, event: DragEvent) {
   )
 }
 
+function onPaste(event: ClipboardEvent) {
+  const targetElement = event.target
+  if (targetElement instanceof HTMLInputElement || targetElement instanceof HTMLTextAreaElement) {
+    return false
+  }
+
+  event.preventDefault()
+
+  const [torrentFiles, links] = extractPasteData(event)
+
+  torrentFiles.forEach(addTorrentStore.pushTorrentToQueue)
+  links.forEach(addTorrentStore.pushTorrentToQueue)
+
+  if ((torrentFiles.length || links.length) && !dialogStore.hasActiveDialog) {
+    dialogStore.createDialog(AddTorrentDialog)
+  }
+}
+
 onMounted(() => {
+  document.addEventListener('paste', onPaste)
   document.addEventListener('dragenter', onDragEnter)
 })
 onUnmounted(() => {
+  document.removeEventListener('paste', onPaste)
   document.removeEventListener('dragenter', onDragEnter)
 })
 </script>

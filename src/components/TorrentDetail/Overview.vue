@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import ColoredChip from '@/components/Core/ColoredChip.vue'
-import ConfirmDeleteDialog from '@/components/Dialogs/ConfirmDeleteDialog.vue'
+import ConfirmDeleteDialog from '@/components/Dialogs/Confirm/ConfirmDeleteDialog.vue'
 import MoveTorrentDialog from '@/components/Dialogs/MoveTorrentDialog.vue'
 import MoveTorrentFileDialog from '@/components/Dialogs/MoveTorrentFileDialog.vue'
 import { useI18nUtils } from '@/composables'
@@ -26,6 +26,7 @@ const vuetorrentStore = useVueTorrentStore()
 const isContextSecured = computed(() => window.isSecureContext)
 
 const selectedFiles = computed(() => cachedFiles.value.filter(f => f.priority !== FilePriority.DO_NOT_DOWNLOAD))
+const selectedFilesSize = computed(() => selectedFiles.value.reduce((acc, file) => acc + file.size, 0))
 const torrentFileCount = computed(() => cachedFiles.value.length)
 const torrentFileName = computed(() => (selectedFiles.value.length === 1 ? selectedFiles.value[0].name : ''))
 
@@ -229,7 +230,7 @@ onUnmounted(async () => {
             <v-col cols="6">
               <div>{{ $t('torrentDetail.overview.selectedFileSize') }}:</div>
               <div>
-                {{ formatData(torrent.size, vuetorrentStore.useBinarySize) }} /
+                {{ formatData(selectedFilesSize, vuetorrentStore.useBinarySize) }} /
                 {{ formatData(torrent.total_size, vuetorrentStore.useBinarySize) }}
               </div>
             </v-col>

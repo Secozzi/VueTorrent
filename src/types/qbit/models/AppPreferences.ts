@@ -1,20 +1,20 @@
-import { FileLogAgeType, ResumeDataStorageType, TorrentContentRemoveOption } from '@/constants/qbit/AppPreferences'
 import type {
   BitTorrentProtocol,
   ContentLayout,
+  DiskIOMode,
+  DiskIOType,
   DynDnsService,
   Encryption,
-  ShareLimitAction,
   ProxyType,
   ScanDirs,
   SchedulerDays,
+  ShareLimitAction,
   StopCondition,
   UploadChokingAlgorithm,
   UploadSlotsBehavior,
-  UtpTcpMixedMode,
-  DiskIOMode,
-  DiskIOType
+  UtpTcpMixedMode
 } from '@/constants/qbit/AppPreferences'
+import { AutoDeleteMode, FileLogAgeType, ResumeDataStorageType, TorrentContentRemoveOption } from '@/constants/qbit/AppPreferences'
 
 export interface NetworkInterface {
   name: string
@@ -28,6 +28,12 @@ export default interface AppPreferences {
   add_trackers: string
   /** Enable automatic adding of trackers to new torrents */
   add_trackers_enabled: boolean
+  /** Enable automatic adding of trackers from provided url to new torrents */
+  add_trackers_from_url_enabled: boolean
+  /** URL to fetch trackers from */
+  add_trackers_url: string
+  /** List of trackers fetched from URL */
+  readonly add_trackers_url_list: string
   /** Alternative global download speed limit in KiB/s */
   alt_dl_limit: number
   /** Alternative global upload speed limit in KiB/s */
@@ -47,7 +53,7 @@ export default interface AppPreferences {
   /** Number of asynchronous I/O threads */
   async_io_threads: number
   /** Delete .torrent files afterwards */
-  auto_delete_mode: number
+  auto_delete_mode: AutoDeleteMode
   /** True if Automatic Torrent Management is enabled by default */
   auto_tmm_enabled: boolean
   /** True if external program should be run after torrent has finished downloading */

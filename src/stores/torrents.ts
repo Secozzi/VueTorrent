@@ -77,15 +77,17 @@ export const useTorrentStore = defineStore(
     )
 
     const isTagFilterActive = shallowRef(true)
-    const tagFilter = ref<(string | null)[]>([])
+    const tagFilterInclude = ref(new Array<string | null>())
+    const tagFilterExclude = ref(new Array<string | null>())
     const tagFilterType = ref(FilterType.DISJUNCTIVE)
     whenever(
-      () => tagFilter.value.length === 0,
+      () => tagFilterInclude.value.length + tagFilterExclude.value.length === 0,
       () => (isTagFilterActive.value = true)
     )
 
     const isTrackerFilterActive = shallowRef(true)
-    const trackerFilter = ref<(string | TrackerSpecialFilter)[]>([])
+    const trackerFilterInclude = ref(new Array<string | TrackerSpecialFilter>())
+    const trackerFilterExclude = ref(new Array<string | TrackerSpecialFilter>())
     const trackerFilterType = ref(FilterType.DISJUNCTIVE)
     const torrentsByTracker = computed(() =>
       torrents.value.reduce(
@@ -112,7 +114,7 @@ export const useTorrentStore = defineStore(
       )
     )
     whenever(
-      () => trackerFilter.value.length === 0,
+      () => trackerFilterInclude.value.length + trackerFilterExclude.value.length === 0,
       () => (isTrackerFilterActive.value = true)
     )
 
@@ -131,9 +133,9 @@ export const useTorrentStore = defineStore(
 
       switch (tagFilterType.value) {
         case FilterType.CONJUNCTIVE:
-          return tagFilter.value.every(matcher)
+          return Array.from(tagFilterInclude.value).every(matcher) && Array.from(tagFilterExclude.value).every(t => !matcher(t))
         case FilterType.DISJUNCTIVE:
-          return tagFilter.value.some(matcher)
+          return Array.from(tagFilterInclude.value).some(matcher) || Array.from(tagFilterExclude.value).some(t => !matcher(t))
       }
     }
     const matchTracker: matchFn = t => {
@@ -152,9 +154,9 @@ export const useTorrentStore = defineStore(
 
       switch (trackerFilterType.value) {
         case FilterType.CONJUNCTIVE:
-          return trackerFilter.value.every(matcher)
+          return Array.from(trackerFilterInclude.value).every(matcher) && Array.from(trackerFilterExclude.value).every(t => !matcher(t))
         case FilterType.DISJUNCTIVE:
-          return trackerFilter.value.some(matcher)
+          return Array.from(trackerFilterInclude.value).some(matcher) || Array.from(trackerFilterExclude.value).some(t => !matcher(t))
       }
     }
 
@@ -162,8 +164,8 @@ export const useTorrentStore = defineStore(
       const matchResults = []
       statusFilter.value.length > 0 && isStatusFilterActive.value && matchResults.push(matchStatus(torrent))
       categoryFilter.value.length > 0 && isCategoryFilterActive.value && matchResults.push(matchCategory(torrent))
-      tagFilter.value.length > 0 && isTagFilterActive.value && matchResults.push(matchTag(torrent))
-      trackerFilter.value.length > 0 && isTrackerFilterActive.value && matchResults.push(matchTracker(torrent))
+      tagFilterInclude.value.length + tagFilterExclude.value.length > 0 && isTagFilterActive.value && matchResults.push(matchTag(torrent))
+      trackerFilterInclude.value.length + trackerFilterExclude.value.length > 0 && isTrackerFilterActive.value && matchResults.push(matchTracker(torrent))
 
       if (matchResults.length === 0) {
         return true
@@ -319,8 +321,10 @@ export const useTorrentStore = defineStore(
       textFilter,
       statusFilter,
       categoryFilter,
-      tagFilter,
-      trackerFilter,
+      tagFilterInclude,
+      tagFilterExclude,
+      trackerFilterInclude,
+      trackerFilterExclude,
       filterType,
       tagFilterType,
       trackerFilterType,
@@ -366,11 +370,13 @@ export const useTorrentStore = defineStore(
         categoryFilter.value = []
 
         isTagFilterActive.value = true
-        tagFilter.value = []
+        tagFilterInclude.value = []
+        tagFilterExclude.value = []
         tagFilterType.value = FilterType.DISJUNCTIVE
 
         isTrackerFilterActive.value = true
-        trackerFilter.value = []
+        trackerFilterInclude.value = []
+        trackerFilterExclude.value = []
         trackerFilterType.value = FilterType.DISJUNCTIVE
       }
     }

@@ -2,7 +2,6 @@ import {
   DashboardProperty,
   defaultDateFormat,
   defaultDurationFormat,
-  PaginationPosition,
   PropertyData,
   propsData,
   propsMetadata,
@@ -28,6 +27,10 @@ export const useVueTorrentStore = defineStore(
       dark: DarkLegacy.id
     })
     const showFreeSpace = ref(true)
+    const showFilterState = ref(true)
+    const showFilterCategory = ref(true)
+    const showFilterTag = ref(true)
+    const showFilterTracker = ref(true)
     const showSpeedGraph = ref(true)
     const showSessionStat = ref(true)
     const showAlltimeStat = ref(true)
@@ -38,7 +41,6 @@ export const useVueTorrentStore = defineStore(
     const uiTitleType = ref(TitleOptions.DEFAULT)
     const uiTitleCustom = ref('')
     const isDrawerRight = ref(false)
-    const paginationPosition = ref(PaginationPosition.BOTH)
     const hideChipIfUnset = ref(false)
     const enableRatioColors = ref(true)
     const enableHashColors = ref(true)
@@ -47,6 +49,7 @@ export const useVueTorrentStore = defineStore(
     const durationFormat = ref(defaultDurationFormat)
     const isShutdownButtonVisible = ref(false)
     const useBitSpeed = ref(false)
+    const expandContent = ref(true)
     const useBinarySize = ref(false)
     const refreshInterval = ref(2000)
     const fileContentInterval = ref(5000)
@@ -248,12 +251,15 @@ export const useVueTorrentStore = defineStore(
       showAlltimeStat,
       showCurrentSpeed,
       showFreeSpace,
+      showFilterState,
+      showFilterCategory,
+      showFilterTag,
+      showFilterTracker,
       showSessionStat,
       showSpeedGraph,
       showSpeedInTitle,
       uiTitleType,
       uiTitleCustom,
-      paginationPosition,
       useBinarySize,
       useBitSpeed,
       useIdForRssLinks,
@@ -286,12 +292,17 @@ export const useVueTorrentStore = defineStore(
       toggleBusyGridProperty,
       toggleDoneGridProperty,
       toggleTableProperty,
+      expandContent,
       $reset: () => {
         language.value = 'en'
         theme.mode = ThemeMode.SYSTEM
         theme.light = LightLegacy.id
         theme.dark = DarkLegacy.id
         showFreeSpace.value = true
+        showFilterState.value = true
+        showFilterCategory.value = true
+        showFilterTag.value = true
+        showFilterTracker.value = true
         showSpeedGraph.value = true
         showSessionStat.value = true
         showAlltimeStat.value = true
@@ -301,7 +312,6 @@ export const useVueTorrentStore = defineStore(
         uiTitleType.value = TitleOptions.DEFAULT
         uiTitleCustom.value = ''
         isDrawerRight.value = false
-        paginationPosition.value = PaginationPosition.BOTH
         hideChipIfUnset.value = false
         enableRatioColors.value = true
         enableHashColors.value = true
@@ -318,6 +328,7 @@ export const useVueTorrentStore = defineStore(
         displayGraphLimits.value = true
         useEmojiState.value = true
         fetchExternalIpInfo.value = false
+        expandContent.value = true
 
         _busyProperties.value = JSON.parse(JSON.stringify(propsData))
         _doneProperties.value = JSON.parse(JSON.stringify(propsData))

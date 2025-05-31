@@ -12,7 +12,7 @@ const props = defineProps<{ torrent: Torrent; isActive: boolean }>()
 
 const { height: deviceHeight } = useDisplay()
 const contentStore = useContentStore()
-const { rightClickProperties, filenameFilter, flatTree, internalSelection, lastSelected, timerForcedPause, isTimerActive } = storeToRefs(contentStore)
+const { rightClickProperties, filenameFilter, flatTree, internalSelection, selectedNodes, lastSelected, timerForcedPause, isTimerActive } = storeToRefs(contentStore)
 const dialogStore = useDialogStore()
 
 const scrollView = ref<VVirtualScroll>()
@@ -64,11 +64,13 @@ watch(
   isActive => {
     if (isActive && !timerForcedPause.value) contentStore.resumeTimer()
     else contentStore.pauseTimer()
+  },
+  {
+    immediate: true
   }
 )
 
 onMounted(() => {
-  props.isActive && contentStore.resumeTimer()
   document.addEventListener('keydown', handleKeyboardInput)
 })
 onBeforeUnmount(() => {
@@ -127,7 +129,7 @@ function handleKeyboardInput(e: KeyboardEvent) {
       contentStore.openNode(e, flatTree.value[oldCursor])
       break
     case KeyNames.Spacebar:
-      contentStore.toggleFileSelection(flatTree.value[oldCursor]).then()
+      contentStore.toggleFileSelection(...selectedNodes.value).then()
       break
   }
 

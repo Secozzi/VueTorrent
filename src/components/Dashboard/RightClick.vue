@@ -2,14 +2,14 @@
 import RightClickMenu from '@/components/Core/RightClickMenu'
 import BulkUpdateTrackersDialog from '@/components/Dialogs/BulkUpdateTrackers/BulkUpdateTrackersDialog.vue'
 import CategoryFormDialog from '@/components/Dialogs/CategoryFormDialog.vue'
-import ConfirmDeleteDialog from '@/components/Dialogs/ConfirmDeleteDialog.vue'
+import ConfirmDeleteDialog from '@/components/Dialogs/Confirm/ConfirmDeleteDialog.vue'
 import MoveTorrentDialog from '@/components/Dialogs/MoveTorrentDialog.vue'
 import RenameTorrentDialog from '@/components/Dialogs/RenameTorrentDialog.vue'
 import ShareLimitDialog from '@/components/Dialogs/ShareLimitDialog.vue'
 import SpeedLimitDialog from '@/components/Dialogs/SpeedLimitDialog.vue'
 import TagFormDialog from '@/components/Dialogs/TagFormDialog.vue'
 import { downloadFile } from '@/helpers'
-import { useCategoryStore, useDashboardStore, useDialogStore, useMaindataStore, usePreferenceStore, useTagStore, useTorrentStore } from '@/stores'
+import { useAppStore, useCategoryStore, useDashboardStore, useDialogStore, useMaindataStore, usePreferenceStore, useTagStore, useTorrentStore } from '@/stores'
 import { RightClickMenuEntryType } from '@/types/vuetorrent'
 import { BlobReader, BlobWriter, ZipWriter } from '@zip.js/zip.js'
 import { computed } from 'vue'
@@ -23,6 +23,7 @@ defineProps<{
 
 const { t } = useI18nUtils()
 const router = useRouter()
+const appStore = useAppStore()
 const categoryStore = useCategoryStore()
 const dashboardStore = useDashboardStore()
 const dialogStore = useDialogStore()
@@ -98,6 +99,17 @@ function openNewTagFormDialog() {
   dialogStore.createDialog(TagFormDialog, { onSubmit: tags => torrentStore.addTorrentTags(selectedHashes, tags) }, maindataStore.forceMaindataSync)
 }
 
+async function deleteUnusedTags() {
+  dialogStore.confirmListAction({
+    title: t('dialogs.confirm.deleteUnusedTags'),
+    items: tagStore.unusedTags,
+    yesColor: 'error',
+    onConfirm: async () => {
+      await tagStore.deleteUnusedTags()
+    }
+  })
+}
+
 async function clearAllTags() {
   await torrentStore.removeTorrentTags(hashes.value)
 }
@@ -105,6 +117,17 @@ async function clearAllTags() {
 function openNewCategoryFormDialog() {
   const selectedHashes = hashes.value
   dialogStore.createDialog(CategoryFormDialog, { onSubmit: cat => torrentStore.setTorrentCategory(selectedHashes, cat.name) }, maindataStore.forceMaindataSync)
+}
+
+async function deleteUnusedCategories() {
+  dialogStore.confirmListAction({
+    title: t('dialogs.confirm.deleteUnusedCategories'),
+    items: categoryStore.unusedCategories,
+    yesColor: 'error',
+    onConfirm: async () => {
+      await categoryStore.deleteUnusedCategories()
+    }
+  })
 }
 
 async function clearCategory() {
@@ -263,7 +286,8 @@ const menuData = computed<RightClickMenuEntryType[]>(() => [
         {
           text: t('settings.tagsAndCategories.deleteUnusedTags'),
           icon: 'mdi-delete',
-          action: tagStore.deleteUnusedTags
+          hidden: tagStore.deleteUnusedTags.length === 0,
+          action: () => deleteUnusedTags().then(maindataStore.forceMaindataSync)
         },
         {
           text: t('dashboard.right_click.tags.clear_all'),
@@ -295,7 +319,8 @@ const menuData = computed<RightClickMenuEntryType[]>(() => [
         {
           text: t('settings.tagsAndCategories.deleteUnusedCategories'),
           icon: 'mdi-delete',
-          action: categoryStore.deleteUnusedCategories
+          hidden: categoryStore.deleteUnusedCategories.length === 0,
+          action: () => deleteUnusedCategories().then(maindataStore.forceMaindataSync)
         },
         {
           text: t('dashboard.right_click.category.clear'),
@@ -347,6 +372,13 @@ const menuData = computed<RightClickMenuEntryType[]>(() => [
         text: t('dashboard.right_click.copy.magnet'),
         icon: 'mdi-magnet',
         action: async () => torrent.value && (await copyValue(torrent.value.magnet))
+      },
+      {
+        text: t('dashboard.right_click.copy.comment'),
+        icon: 'mdi-comment-text',
+        hidden: !appStore.isFeatureAvailable('5.0.0'),
+        disabled: !torrent.value?.comment,
+        action: async () => torrent.value && (await copyValue(torrent.value.comment))
       }
     ]
   },

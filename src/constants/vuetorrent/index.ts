@@ -5,10 +5,10 @@ import { DashboardDisplayMode } from './DashboardDisplayMode'
 import { DashboardProperty } from './DashboardProperty'
 import { DashboardPropertyType } from './DashboardPropertyType'
 import { FeedState } from './FeedState'
-import { getFileIcon, typesMap } from './FileIcon'
+import { FileType, extMap, typesMap } from './FileIcon'
+import { FilterState } from './FilterState'
 import { FilterType } from './FilterType'
 import { HistoryKey } from './HistoryKey'
-import { PaginationPosition } from './PaginationPosition'
 import { ThemeMode } from './ThemeMode'
 import { TitleOptions } from './TitleOptions'
 import { TorrentState, emojiStateMap, stateQbitToVt, stateVtToQbit } from './TorrentState'
@@ -28,11 +28,12 @@ export {
   DashboardProperty,
   DashboardPropertyType,
   FeedState,
-  getFileIcon,
+  FileType,
   typesMap,
+  extMap,
+  FilterState,
   FilterType,
   HistoryKey,
-  PaginationPosition,
   ThemeMode,
   TitleOptions,
   TorrentState,

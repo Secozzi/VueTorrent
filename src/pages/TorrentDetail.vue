@@ -7,15 +7,16 @@ import Peers from '@/components/TorrentDetail/Peers.vue'
 import TagsAndCategories from '@/components/TorrentDetail/TagsAndCategories.vue'
 import Trackers from '@/components/TorrentDetail/Trackers.vue'
 import { useI18nUtils } from '@/composables'
-import { useContentStore, useDialogStore, useTorrentDetailStore, useTorrentStore } from '@/stores'
+import { useContentStore, useDialogStore, useGlobalStore, useTorrentDetailStore, useTorrentStore } from '@/stores'
 import { storeToRefs } from 'pinia'
-import { computed, onBeforeUnmount, onMounted, watch, watchEffect } from 'vue'
+import { computed, onBeforeUnmount, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
 const { t } = useI18nUtils()
 const contentStore = useContentStore()
 const dialogStore = useDialogStore()
+const globalStore = useGlobalStore()
 const torrentStore = useTorrentStore()
 const torrentDetailStore = useTorrentDetailStore()
 const { tab } = storeToRefs(torrentDetailStore)
@@ -30,9 +31,32 @@ const tabs = [
 ]
 
 const hash = computed(() => router.currentRoute.value.params.hash as string)
+const torrentIndex = computed(() => torrentStore.getTorrentIndexByHash(hash.value))
 const torrent = computed(() => torrentStore.getTorrentByHash(hash.value))
+const isFirstTorrent = computed(() => torrentIndex.value === 0)
+const isLastTorrent = computed(() => torrentIndex.value === torrentStore.processedTorrents.length - 1)
 
-const goHome = () => {
+function goToTorrentIndex(index: number) {
+  router.push({ name: 'torrentDetail', params: { hash: torrentStore.processedTorrents[index].hash } }).then(res => !res && globalStore.forceReload())
+}
+
+function goToFirstTorrent() {
+  goToTorrentIndex(0)
+}
+
+function goToPreviousTorrent() {
+  goToTorrentIndex(torrentIndex.value - 1)
+}
+
+function goToNextTorrent() {
+  goToTorrentIndex(torrentIndex.value + 1)
+}
+
+function goToLastTorrent() {
+  goToTorrentIndex(torrentStore.processedTorrents.length - 1)
+}
+
+function goHome() {
   router.push({ name: 'dashboard' })
 }
 
@@ -53,8 +77,8 @@ function updateTabHandle() {
   }
 }
 
-watchEffect(() => {
-  updateTabHandle()
+watch(router.currentRoute, updateTabHandle, {
+  immediate: true
 })
 
 watch(torrent, () => {
@@ -63,9 +87,8 @@ watch(torrent, () => {
 
 onMounted(() => {
   document.addEventListener('keydown', handleKeyboardShortcut)
-  updateTabHandle()
   torrentDetailStore.fetchProperties(hash.value)
-  contentStore.updateFileTreeTask.perform().then(() => contentStore.expandAll())
+  contentStore.updateFileTreeTask.perform()
 })
 onBeforeUnmount(() => {
   document.removeEventListener('keydown', handleKeyboardShortcut)
@@ -83,6 +106,10 @@ onBeforeUnmount(() => {
       </v-col>
       <v-col>
         <div class="d-flex justify-end">
+          <v-btn icon="mdi-skip-previous" :disabled="isFirstTorrent" variant="plain" @click="goToFirstTorrent" />
+          <v-btn icon="mdi-arrow-left" :disabled="isFirstTorrent" variant="plain" @click="goToPreviousTorrent" />
+          <v-btn icon="mdi-arrow-right" :disabled="isLastTorrent" variant="plain" @click="goToNextTorrent" />
+          <v-btn icon="mdi-skip-next" :disabled="isLastTorrent" variant="plain" @click="goToLastTorrent" />
           <v-btn icon="mdi-close" variant="plain" @click="goHome" />
         </div>
       </v-col>

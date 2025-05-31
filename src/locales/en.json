@@ -4,6 +4,7 @@
     "auto": "Auto",
     "cancel": "Cancel",
     "close": "Close",
+    "create": "Create",
     "delete": "Delete",
     "disable": "Disable",
     "disabled": "Disabled",
@@ -21,6 +22,7 @@
     "search": "Search",
     "selectAll": "Select All",
     "selectNone": "Select None",
+    "submit": "Submit",
     "useGlobalSettings": "Use Global Settings",
     "yes": "Yes"
   },
@@ -29,6 +31,11 @@
       "always": "Always",
       "never": "Never",
       "title": "Add stopped"
+    },
+    "auto_delete_mode": {
+      "always": "Always",
+      "if_added": "If added",
+      "never": "Never"
     },
     "bittorrentProtocols": {
       "tcp": "TCP",
@@ -75,6 +82,20 @@
       "normal": "Normal",
       "unwanted": "Unwanted"
     },
+    "file_type": {
+      "archive": "Archives",
+      "audio": "Audio",
+      "book": "Books",
+      "document": "Documents",
+      "executable": "Executables",
+      "image": "Images",
+      "information": "Information",
+      "no_ext": "(No ext)",
+      "script": "Scripts",
+      "subtitle": "Subtitles",
+      "unknown": "Unknown",
+      "video": "Video"
+    },
     "filter_type": {
       "conjunctive": "Conjunctive filtering (AND)",
       "disjunctive": "Disjunctive filtering (OR)"
@@ -116,6 +137,7 @@
     "themes": {
       "dark": {
         "legacy": "Legacy",
+        "oled": "OLED",
         "redesigned": "Redesigned"
       },
       "light": {
@@ -165,6 +187,23 @@
       "preferTcp": "Prefer TCP"
     }
   },
+  "cookiesManager": {
+    "clear": "Clear all cookies",
+    "create": "Add new cookie",
+    "empty": {
+      "action": "Add new cookie",
+      "value": "No cookies registered"
+    },
+    "import": "Import cookies",
+    "table": {
+      "domain": "Domain Name",
+      "expiration_date": "Expiration Date",
+      "name": "Cookie Name",
+      "path": "Path",
+      "value": "Cookie Value"
+    },
+    "title": "Cookies Manager"
+  },
   "dashboard": {
     "displayMode": {
       "grid": "Grid",
@@ -193,6 +232,7 @@
         "title": "Set category"
       },
       "copy": {
+        "comment": "Comment",
         "hash": "Hash",
         "magnet": "Magnet",
         "name": "Name",
@@ -228,62 +268,6 @@
     "searchInputLabel": "Search",
     "selectAll": "(Un)select All (Ctrl + A)",
     "selectedTorrentsCount": "No torrent | {count} of {total} torrent ({size}) | {count} of {total} torrents ({size})",
-    "sortBy": {
-      "added_on": "Added On",
-      "amount_left": "Amount Left",
-      "availability": "Availability",
-      "available_peers": "Peers (swarm)",
-      "available_seeds": "Seeds (swarm)",
-      "avg_download_speed": "Avg. DL Speed",
-      "avg_upload_speed": "Avg. UL Speed",
-      "basename_content_path": "Content Path (basename)",
-      "basename_download_path": "Download Path (basename)",
-      "basename_save_path": "Save Path (basename)",
-      "category": "Category",
-      "completion_on": "Completed On",
-      "content_path": "Content Path",
-      "default": "Default",
-      "dl_limit": "Download Limit",
-      "dlspeed": "Download Speed",
-      "downloaded": "Downloaded (Global)",
-      "downloaded_session": "Downloaded (Session)",
-      "download_path": "Download Path",
-      "eta": "ETA",
-      "globalSpeed": "Global Speed",
-      "globalVolume": "Global Volume",
-      "hash": "Hash",
-      "inactive_seeding_time_limit": "Inactive Seeding Time Limit",
-      "infohash_v1": "Infohash v1",
-      "infohash_v2": "Infohash v2",
-      "last_activity": "Last Activity",
-      "magnet_uri": "Magnet URI",
-      "max_ratio": "Max Ratio",
-      "max_seeding_time": "Max Seeding Time",
-      "name": "Name",
-      "num_complete": "Seeds (swarm)",
-      "num_incomplete": "Peers (swarm)",
-      "num_leechs": "Peers (connected)",
-      "num_seeds": "Seeds (connected)",
-      "priority": "Queue position",
-      "progress": "Progress",
-      "ratio": "Ratio",
-      "ratio_limit": "Ratio Limit",
-      "save_path": "Save Path",
-      "seeding_time": "Seeding Time",
-      "seeding_time_limit": "Seeding Time Limit",
-      "seen_complete": "Seen Complete",
-      "size": "Size",
-      "state": "State",
-      "tags": "Tags",
-      "time_active": "Time Active",
-      "total_size": "Total Size",
-      "tracker": "Tracker",
-      "trackers_count": "Trackers Count",
-      "up_limit": "Upload Limit",
-      "uploaded": "Uploaded (Global)",
-      "uploaded_session": "Uploaded (Session)",
-      "upspeed": "Upload Speed"
-    },
     "sortLabel": "Sort by",
     "toggleSearchFilter": "Toggle search filter",
     "toggleSelectMode": "Toggle select mode",
@@ -373,6 +357,19 @@
       },
       "warnEdit": "Editing the category name will migrate torrents to the new category. Errors may happen, use with caution."
     },
+    "confirm": {
+      "banPeers": "Do you really want to ban this peer?",
+      "clearCookies": "Do you really want to clear all cookies?",
+      "deleteCategory": "Do you really want to remove this category?",
+      "deleteCookie": "Do you really want to remove this cookie?",
+      "deleteFeed": "Do you really want to remove this RSS feed?",
+      "deleteRule": "Do you really want to remove this RSS rule?",
+      "deleteTag": "Do you really want to remove this tag?",
+      "deleteUnusedCategories": "Do you really want to remove all unused categories?",
+      "deleteUnusedTags": "Do you really want to remove all unused tags?",
+      "startAll": "Do you really want to start all torrents?",
+      "stopAll": "Do you really want to stop all torrents?"
+    },
     "connectionStatus": {
       "dht_nodes": "DHT nodes",
       "externalIp": "External IP Address",
@@ -381,9 +378,30 @@
       "fetch_isp_failed": "Unable to fetch ISP details",
       "geo_details": "Geolocation details",
       "isp_details": "ISP details",
-      "noExternalIp": "Unable to detect from logs",
+      "noExternalIp": "Unable to detect External IP Address",
       "status": "Connection Status",
       "total_peer_connections": "Active peer connections"
+    },
+    "cookiesImport": {
+      "input": "Cookie data",
+      "title": "Import cookies",
+      "type": {
+        "header": "Header value",
+        "json": "JSON",
+        "label": "Type of data to import",
+        "netscape": "Netscape"
+      }
+    },
+    "cookiesManager": {
+      "domain": "Domain Name",
+      "expiration_date": "Expiration Date",
+      "name": "Cookie Name",
+      "path": "Path",
+      "rules": {
+        "duplicate": "This cookie already exists"
+      },
+      "title": "Cookie form",
+      "value": "Cookie Value"
     },
     "delete": {
       "deleteWithFiles": "Delete files with torrent",
@@ -567,6 +585,9 @@
         "alt_speed": "Toggle alternative speed",
         "conn_status": "Connection status: {status}",
         "dark_mode": " Light mode | Dark mode | Follow system settings",
+        "dark_mode.dark": "Dark mode",
+        "dark_mode.light": "Light mode",
+        "dark_mode.system": "Follow system settings",
         "logout": "Logout",
         "shutdown": "Shutdown qBittorrent"
       },
@@ -709,7 +730,12 @@
     "runSearch": "Search",
     "stopSearch": "Stop",
     "tabHeaderEmpty": "(Empty query)",
-    "title": "Search engine"
+    "title": "Search engine",
+    "tooltip": {
+      "open_link": "Open link in new tab",
+      "append_queue": "Append to torrent queue",
+      "download": "Download using plugin"
+    }
   },
   "settings": {
     "addons": {
@@ -856,6 +882,7 @@
     },
     "bittorrent": {
       "autoAddTrackers": "Automatically append these trackers to new downloads",
+      "autoAddTrackersFromUrl": "Automatically append trackers from URL to new downloads",
       "autoAddTrackersHint": "One tracker per line",
       "maxActiveCheckingTorrents": "Max active checking torrents",
       "privacy": {
@@ -883,7 +910,8 @@
         "subheader": "Torrent Queueing",
         "torrentInactivityTimer": "Torrent inactivity timer",
         "uploadRateLimit": "Upload rate threshold"
-      }
+      },
+      "trackersFetchedFromUrl": "Trackers fetched from URL"
     },
     "connection": {
       "connectionLimits": {
@@ -1108,6 +1136,7 @@
         "durationFormat": "Duration format",
         "enableHashColors": "Enable generated chip colors",
         "enableRatioColors": "Enable ratio colors",
+        "expandContent": "Expand content by default in Content view",
         "fetchExternalIpInfo": "Fetch external IP info",
         "fileContentInterval": "Torrent file content refresh interval",
         "filterType": "Filters inclusion type",
@@ -1119,16 +1148,10 @@
         "isShutdownButtonVisible": "Show shutdown button",
         "language": "Language",
         "lightVariants": "Light theme variant",
-        "paginationPosition": {
-          "both": "Both",
-          "bottom": "Only bottom",
-          "title": "Pagination position",
-          "top": "Only top"
-        },
         "paginationSize": {
           "infinite_scroll": "Infinite scroll",
           "label": "Pagination Size",
-          "warning": "Using high values can affect performance"
+          "warning": "This option can significantly affect performance with a lot of torrents"
         },
         "qbittorrentVersion": "qBittorrent Version",
         "refreshInterval": "qBittorrent API refresh interval",
@@ -1136,6 +1159,15 @@
         "resetSettings": "Reset Settings",
         "showAlltimeStat": "Show All-Time Stats",
         "showCurrentSpeed": "Show Current Speed",
+        "showFilters": {
+          "allFiltersEnabled": "All filters enabled",
+          "category": "Category",
+          "filtersEnabled": "{n} filters enabled",
+          "state": "State",
+          "tag": "Tag",
+          "title": "Show filters",
+          "tracker": "Tracker"
+        },
         "showFreeSpace": "Show Free Space",
         "showSessionStat": "Show Session Stats",
         "showSpeedGraph": "Show Speed Graph",
@@ -1239,6 +1271,7 @@
   },
   "topbar": {
     "actions": {
+      "cookies": "Open Cookies Manager",
       "delete": "Delete Torrents",
       "logs": "Open Logs",
       "pause": "Pause Torrents",
@@ -1250,6 +1283,7 @@
     },
     "addTorrents": "Add Torrents",
     "overflow": {
+      "cookies": "Cookies Manager",
       "delete": "Delete",
       "logs": "qBittorrent Logs",
       "pause": "Pause",
@@ -1437,6 +1471,7 @@
       "global_speed": "Global Speed",
       "global_volume": "Global Volume",
       "hash": "Hash",
+      "has_metadata": "Has Metadata",
       "inactive_seeding_time_limit": "Inactive Seeding Time Limit",
       "infohash_v1": "Infohash v1",
       "infohash_v2": "Infohash v2",
@@ -1449,12 +1484,15 @@
       "num_leechs": "Peers (connected)",
       "num_seeds": "Seeds (connected)",
       "peers": "Peers",
+      "popularity": "Popularity",
       "priority": "Queue Pos.",
+      "private": "Is Private",
       "progress": "Progress",
       "progress_bar": "Progress Bar",
       "ratio": "Ratio",
       "ratio_limit": "Ratio limit",
       "reannounce": "Next Reannounce",
+      "root_path": "Root path",
       "save_path": "Save Path",
       "seeding_time": "Seeding Time",
       "seeding_time_limit": "Seeding Time Limit",

@@ -15,7 +15,7 @@ export const useContentStore = defineStore('content', () => {
   const { t } = useI18nUtils()
   const route = useRoute()
   const dialogStore = useDialogStore()
-  const { fileContentInterval } = storeToRefs(useVueTorrentStore())
+  const { fileContentInterval, expandContent } = storeToRefs(useVueTorrentStore())
 
   const hash = computed(() => route.params.hash as string)
 
@@ -23,6 +23,7 @@ export const useContentStore = defineStore('content', () => {
     isVisible: false,
     offset: [0, 0]
   })
+  const isFirstRun = shallowRef(true)
   const cachedFiles = shallowRef<TorrentFile[]>([])
   const filenameFilter = shallowRef('')
   const { results: filteredFiles } = useSearchQuery(cachedFiles, filenameFilter, item => item.name)
@@ -97,7 +98,12 @@ export const useContentStore = defineStore('content', () => {
   ])
 
   const updateFileTreeTask = useTask(function* () {
-    yield updateFileTree()
+    if (isFirstRun.value) {
+      yield updateFileTree().then(() => expandContent.value && expandAll())
+      isFirstRun.value = false
+    } else {
+      yield updateFileTree()
+    }
   }).drop()
 
   const timerForcedPause = shallowRef(false)
@@ -204,18 +210,23 @@ export const useContentStore = defineStore('content', () => {
       .reduce((prev, curr) => prev.add(curr), new Set(['']))
   }
 
-  async function toggleFileSelection(node: TreeNode) {
-    if (!node.wanted) {
-      await setFilePriority(node.childrenIds, FilePriority.NORMAL)
+  async function toggleFileSelection(...nodes: TreeNode[]) {
+    const wanted = nodes.some(node => node.wanted)
+    const ids = nodes.flatMap(node => node.childrenIds)
+
+    if (!wanted) {
+      await setFilePriority(ids, FilePriority.NORMAL)
     } else {
-      await setFilePriority(node.childrenIds, FilePriority.DO_NOT_DOWNLOAD)
+      await setFilePriority(ids, FilePriority.DO_NOT_DOWNLOAD)
     }
   }
 
   return {
     rightClickProperties,
+    isFirstRun,
     internalSelection,
     lastSelected,
+    selectedNodes,
     menuData,
     filenameFilter,
     cachedFiles,
@@ -245,6 +256,7 @@ export const useContentStore = defineStore('content', () => {
       filenameFilter.value = ''
       cachedFiles.value = []
       openedItems.value = new Set([''])
+      isFirstRun.value = true
     }
   }
 })

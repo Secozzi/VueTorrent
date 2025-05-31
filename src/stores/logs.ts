@@ -3,30 +3,25 @@ import { LogType } from '@/constants/qbit'
 import { comparators } from '@/helpers'
 import qbit from '@/services/qbit'
 import { Log } from '@/types/qbit/models'
-import { whenever } from '@vueuse/core'
-import { acceptHMRUpdate, defineStore, storeToRefs } from 'pinia'
-import { computed, ref, watch } from 'vue'
+import toSorted from 'array.prototype.tosorted'
+import { acceptHMRUpdate, defineStore } from 'pinia'
+import { computed, ref } from 'vue'
 import { useTask } from 'vue-concurrency'
-import { useVueTorrentStore } from './vuetorrent'
 
 export const useLogStore = defineStore(
   'logs',
   () => {
-    const { fetchExternalIpInfo } = storeToRefs(useVueTorrentStore())
-
     const logs = ref<Log[]>([])
     const externalIp = ref<string>()
-    const lastFetchedIp = ref<string>()
-    const geoDetails = ref<string | null>(null)
-    const ispDetails = ref<string | null>(null)
     const reverseSort = ref<boolean>(false)
     const logTypeFilter = ref<LogType[]>([LogType.NORMAL, LogType.INFO, LogType.WARNING, LogType.CRITICAL])
     const logMessageFilter = ref('')
+    const cleanFetchLock = ref(false)
 
     const filteredLogsByType = computed(() => logs.value.filter(log => logTypeFilter.value.includes(log.type)))
     const { results: filteredLogs } = useSearchQuery(filteredLogsByType, logMessageFilter, log => log.message)
     const { paginatedResults, currentPage, pageCount } = useArrayPagination(
-      () => filteredLogs.value.toSorted((a, b) => comparators.numeric.compare(a.id, b.id, !reverseSort.value)),
+      () => toSorted(filteredLogs.value, (a, b) => comparators.numeric.compare(a.id, b.id, !reverseSort.value)),
       30
     )
     const logTask = useTask(function* (_: AbortSignal, lastId?: number) {
@@ -47,8 +42,11 @@ export const useLogStore = defineStore(
     }
 
     async function cleanAndFetchLogs() {
+      if (cleanFetchLock.value) return
+      cleanFetchLock.value = true
       logs.value = []
-      return fetchLogs(-1)
+      await fetchLogs(-1)
+      cleanFetchLock.value = false
     }
 
     async function extractExternalIpFromLogs(logsToParse: Log[]) {
@@ -59,34 +57,10 @@ export const useLogStore = defineStore(
       if (match) externalIp.value = match[1]
     }
 
-    async function fetchGeoAndIspDetails() {
-      if (!fetchExternalIpInfo.value) return
-
-      if (externalIp.value && externalIp.value !== lastFetchedIp.value) {
-        try {
-          // 1K requests per day
-          const response = await fetch(`https://ipinfo.io/${externalIp.value}/json`)
-          const data = await response.json()
-          geoDetails.value = `${data.city}, ${data.region}, ${data.country}`
-          ispDetails.value = data.org
-          // Update the last fetched IP in the logStore
-          lastFetchedIp.value = externalIp.value
-        } catch (error) {
-          console.error('Error fetching geo & ISP details:', error)
-        }
-      }
-    }
-
-    // Watch for changes in externalIp and fetch Geo/ISP details accordingly
-    watch(externalIp, fetchGeoAndIspDetails)
-    whenever(fetchExternalIpInfo, fetchGeoAndIspDetails)
-
     return {
       logs,
       filteredLogs,
       externalIp,
-      geoDetails,
-      ispDetails,
       logTypeFilter,
       logMessageFilter,
       paginatedResults,
@@ -99,7 +73,6 @@ export const useLogStore = defineStore(
         logTask.clear()
         logs.value = []
         externalIp.value = undefined
-        lastFetchedIp.value = undefined
         logTypeFilter.value = [LogType.NORMAL, LogType.INFO, LogType.WARNING, LogType.CRITICAL]
         logMessageFilter.value = ''
       }

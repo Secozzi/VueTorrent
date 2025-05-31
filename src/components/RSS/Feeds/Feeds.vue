@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import RssFeedDialog from '@/components/Dialogs/RssFeedDialog.vue'
+import { useI18nUtils } from '@/composables'
 import { useDialogStore, useRssStore } from '@/stores'
 import { Feed } from '@/types/qbit/models'
 import { RssArticle } from '@/types/vuetorrent'
@@ -17,6 +18,7 @@ defineEmits<{
   openArticle: [article: RssArticle]
 }>()
 
+const { t } = useI18nUtils()
 const dialogStore = useDialogStore()
 const rssStore = useRssStore()
 
@@ -47,8 +49,15 @@ async function refreshFeed(item: Feed) {
 }
 
 async function deleteFeed(item: Feed) {
-  await rssStore.deleteFeed(item.name)
-  rssStore.resumeFeedTimer()
+  dialogStore.confirmAction({
+    title: t('dialogs.confirm.deleteFeed'),
+    text: item.name,
+    yesColor: 'error',
+    onConfirm: async () => {
+      await rssStore.deleteFeed(item.name)
+      rssStore.resumeFeedTimer()
+    }
+  })
 }
 
 onMounted(() => {

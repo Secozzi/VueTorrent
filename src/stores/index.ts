@@ -2,8 +2,10 @@ import { useAddTorrentStore } from './addTorrents'
 import { useAppStore } from './app'
 import { useCategoryStore } from './categories'
 import { useContentStore } from './content'
+import { useCookieStore } from './cookies'
 import { useDashboardStore } from './dashboard'
 import { useDialogStore } from './dialog'
+import { useGlobalStore } from './global'
 import { useHistoryStore } from './history'
 import { useLogStore } from './logs'
 import { useMaindataStore } from './maindata'
@@ -17,14 +19,18 @@ import { useTorrentDetailStore } from './torrentDetail'
 import { useTorrentStore } from './torrents'
 import { useTrackerStore } from './trackers'
 import { useVueTorrentStore } from './vuetorrent'
+import { useExternalIpStore } from './externalIp'
 
 export {
   useAddTorrentStore,
   useAppStore,
   useCategoryStore,
   useContentStore,
+  useCookieStore,
   useDashboardStore,
   useDialogStore,
+  useExternalIpStore,
+  useGlobalStore,
   useHistoryStore,
   useLogStore,
   useMaindataStore,

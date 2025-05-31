@@ -6,7 +6,18 @@ import Navbar from '@/components/Navbar/Navbar.vue'
 import { TitleOptions } from '@/constants/vuetorrent'
 import { formatPercent, formatSpeed } from '@/helpers'
 import { backend } from '@/services/backend'
-import { useAddTorrentStore, useAppStore, useDialogStore, useLogStore, useMaindataStore, usePreferenceStore, useTorrentStore, useVueTorrentStore } from '@/stores'
+import {
+  useAddTorrentStore,
+  useAppStore,
+  useDashboardStore,
+  useDialogStore,
+  useGlobalStore,
+  useLogStore,
+  useMaindataStore,
+  usePreferenceStore,
+  useTorrentStore,
+  useVueTorrentStore
+} from '@/stores'
 import { storeToRefs } from 'pinia'
 import { onBeforeMount, onMounted, watch, watchEffect } from 'vue'
 import { useBackendSync, useI18nUtils } from '@/composables'
@@ -15,18 +26,29 @@ import { toast } from 'vue3-toastify'
 const { t } = useI18nUtils()
 const addTorrentStore = useAddTorrentStore()
 const appStore = useAppStore()
+const dashboardStore = useDashboardStore()
 const dialogStore = useDialogStore()
 const logStore = useLogStore()
 const maindataStore = useMaindataStore()
 const { serverState } = storeToRefs(maindataStore)
-const { torrents } = storeToRefs(useTorrentStore())
+const torrentStore = useTorrentStore()
+const { torrents } = storeToRefs(torrentStore)
 const preferencesStore = usePreferenceStore()
+const { routerDomKey } = storeToRefs(useGlobalStore())
 const vuetorrentStore = useVueTorrentStore()
 const { language, uiTitleCustom, uiTitleType, useBitSpeed } = storeToRefs(vuetorrentStore)
 
-const backendSync = useBackendSync(vuetorrentStore, 'vuetorrent_webuiSettings', {
-  blacklist: ['uiTitleCustom']
-})
+const backendSyncObjects = [
+  useBackendSync(dashboardStore, 'vuetorrent_dashboard', {
+    whitelist: ['displayMode']
+  }),
+  useBackendSync(torrentStore, 'vuetorrent_torrents', {
+    whitelist: ['sortCriterias']
+  }),
+  useBackendSync(vuetorrentStore, 'vuetorrent_webuiSettings', {
+    blacklist: ['uiTitleCustom']
+  })
+]
 
 const checkAuthentication = async () => {
   const promise = appStore.fetchAuthStatus()
@@ -54,7 +76,6 @@ function addLaunchQueueConsumer() {
   const win = window as { launchQueue?: { setConsumer: (callback: (launchParams: { files: Readonly<FileSystemFileHandle[]>; targetURL: string }) => void) => void } }
   win.launchQueue?.setConsumer(async launchParams => {
     if (launchParams.files && launchParams.files.length) {
-      addTorrentStore.isFirstInit = false
       await Promise.all(launchParams.files.map(async file => addTorrentStore.pushTorrentToQueue(await file.getFile())))
       dialogStore.createDialog(AddTorrentDialog)
     }
@@ -81,17 +102,16 @@ watch(
       maindataStore.forceMaindataSync()
       await preferencesStore.fetchPreferences()
       await logStore.cleanAndFetchLogs()
-      addTorrentStore.initForm()
 
       backend.ping().then(async ok => {
         if (ok) {
-          await backendSync.loadState()
-          await backendSync.registerWatcher()
+          await Promise.allSettled(backendSyncObjects.map(obj => obj.loadState()))
+          backendSyncObjects.forEach(obj => obj.registerWatcher())
         }
       })
     } else {
       maindataStore.stopMaindataSync()
-      await backendSync.cancelWatcher()
+      backendSyncObjects.forEach(obj => obj.cancelWatcher())
     }
   },
   {
@@ -106,21 +126,17 @@ watchEffect(() => {
   const mode = uiTitleType.value
   switch (mode) {
     case TitleOptions.GLOBAL_SPEED:
-      document.title =
-        '[' +
-        `D: ${formatSpeed(serverState.value?.dl_info_speed ?? 0, useBitSpeed.value)}, ` +
-        `U: ${formatSpeed(serverState.value?.up_info_speed ?? 0, useBitSpeed.value)}` +
-        `] ${baseName}`
+      const dl_speed = formatSpeed(serverState.value?.dl_info_speed ?? 0, useBitSpeed.value)
+      const ul_speed = formatSpeed(serverState.value?.up_info_speed ?? 0, useBitSpeed.value)
+      document.title = `[D: ${dl_speed}, U: ${ul_speed}] ${baseName}`
       break
     case TitleOptions.FIRST_TORRENT_STATUS:
       const torrent = torrents.value.at(0)
       if (torrent) {
-        document.title =
-          '[' +
-          `D: ${formatSpeed(torrent.dlspeed, useBitSpeed.value)}, ` +
-          `U: ${formatSpeed(torrent.upspeed, useBitSpeed.value)}, ` +
-          `${formatPercent(torrent.progress)}` +
-          `] ${baseName}`
+        const dl_speed = formatSpeed(torrent.dlspeed, useBitSpeed.value)
+        const ul_speed = formatSpeed(torrent.upspeed, useBitSpeed.value)
+        const progress = formatPercent(torrent.progress)
+        document.title = `[D: ${dl_speed}, U: ${ul_speed}, ${progress}] ${baseName}`
       } else {
         document.title = `[N/A] ${baseName}`
       }
@@ -141,7 +157,7 @@ watchEffect(() => {
     <component v-for="dialog in dialogStore.dialogs.values()" :is="dialog.component" v-bind="{ guid: dialog.guid, ...dialog.props }" />
     <Navbar v-if="appStore.isAuthenticated" />
     <v-main>
-      <router-view />
+      <router-view :key="routerDomKey" />
     </v-main>
     <AddPanel v-if="appStore.isAuthenticated" />
     <DnDZone />

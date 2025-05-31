@@ -10,11 +10,13 @@ import {
   TorrentState
 } from '@/constants/qbit'
 import { ContentLayout, ProxyType, ResumeDataStorageType, StopCondition, TorrentContentRemoveOption } from '@/constants/qbit/AppPreferences'
+import { QBIT_MAX_ETA } from '@/helpers'
 import type {
   ApplicationVersion,
   AppPreferences,
   BuildInfo,
   Category,
+  Cookie,
   Feed,
   FeedRule,
   Log,
@@ -95,7 +97,7 @@ export default class MockProvider implements IProvider {
       download_path: faker.system.directoryPath(),
       downloaded: completed,
       downloaded_session: completed,
-      eta: faker.number.int({ min: 0, max: 900000 }),
+      eta: faker.number.int({ min: 0, max: QBIT_MAX_ETA }),
       f_l_piece_prio: faker.datatype.boolean(), // [0; 5 Mo/s]
       force_start: faker.datatype.boolean(),
       has_metadata: true,
@@ -174,7 +176,7 @@ export default class MockProvider implements IProvider {
   }
 
   async getVersion(): Promise<ApplicationVersion> {
-    return this.generateResponse({ result: '5.0.0' })
+    return this.generateResponse({ result: '5.1.0' })
   }
 
   async getPreferences(): Promise<AppPreferences> {
@@ -191,6 +193,9 @@ export default class MockProvider implements IProvider {
         add_to_top_of_queue: false,
         add_trackers: '',
         add_trackers_enabled: false,
+        add_trackers_from_url_enabled: false,
+        add_trackers_url: '',
+        add_trackers_url_list: '',
         alt_dl_limit: 10240,
         alt_up_limit: 10240,
         alternative_webui_enabled: true,
@@ -450,6 +455,25 @@ export default class MockProvider implements IProvider {
     return this.generateResponse({
       result: faker.helpers.multiple(() => `${dirPath}/${faker.system.fileName()}`, { count: { min: 0, max: 5 } })
     })
+  }
+
+  getCookies(): Promise<Cookie[]> {
+    return this.generateResponse({
+      result: faker.helpers.multiple(
+        () => ({
+          name: faker.word.words({ count: 1 }),
+          domain: faker.internet.domainName(),
+          value: faker.word.words({ count: 1 }),
+          path: '/',
+          expirationDate: faker.date.future().getTime() / 1000
+        }),
+        { count: { min: 1, max: 15 } }
+      )
+    })
+  }
+
+  setCookies(_: Cookie[]): Promise<void> {
+    return this.generateResponse()
   }
 
   /// AuthController ///
@@ -942,6 +966,16 @@ export default class MockProvider implements IProvider {
               torrentURL: 'https://www.example.com/article/SDb4v2op8wm'
             }
           ]
+        },
+        {
+          hasError: false,
+          isLoading: false,
+          lastBuildDate: '02 Aug 2023 16:00:46 +0000',
+          name: 'feed17',
+          title: 'RSS Feed 17',
+          uid: '{7ae5ac9f-4698-4638-9a99-197462c3a456}',
+          url: 'https://www.example.com/feed',
+          articles: []
         }
       ]
     })
@@ -1044,7 +1078,9 @@ export default class MockProvider implements IProvider {
             fileUrl: 'https://www.example.com/torrent/SDb4v2op8wm',
             nbLeechers: 0,
             nbSeeders: 0,
-            siteUrl: 'https://www.example.com'
+            siteUrl: 'https://www.example.com',
+            engineName: 'Example',
+            pubDate: new Date().getTime() / 1000
           }
         ],
         status: 'Stopped',

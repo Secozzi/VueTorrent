@@ -3,10 +3,10 @@ import HistoryField from '@/components/Core/HistoryField.vue'
 import AddTorrentParamsForm from '@/components/Dialogs/AddTorrentParamsForm.vue'
 import { useDialog } from '@/composables'
 import { HistoryKey } from '@/constants/vuetorrent'
-import { useAddTorrentStore, useTorrentStore, useVueTorrentStore } from '@/stores'
+import { useAddTorrentStore, useAppStore, useTorrentStore, useVueTorrentStore } from '@/stores'
 import { AddTorrentPayload } from '@/types/qbit/payloads'
 import { storeToRefs } from 'pinia'
-import { computed, ref } from 'vue'
+import { computed, onBeforeMount, ref } from 'vue'
 import { useI18nUtils } from '@/composables'
 import { toast } from 'vue3-toastify'
 
@@ -24,6 +24,7 @@ const { isOpened } = useDialog(props.guid)
 const { t } = useI18nUtils()
 const addTorrentStore = useAddTorrentStore()
 const { urls, files, form, addTorrentParams } = storeToRefs(addTorrentStore)
+const appStore = useAppStore()
 const torrentStore = useTorrentStore()
 const vueTorrentStore = useVueTorrentStore()
 
@@ -95,6 +96,10 @@ function submit() {
 function close() {
   isOpened.value = false
 }
+
+onBeforeMount(() => {
+  addTorrentStore.initForm()
+})
 </script>
 
 <template>
@@ -149,7 +154,7 @@ function close() {
 
             <v-slide-y-transition>
               <HistoryField
-                v-if="!!urls"
+                v-if="!!urls && !appStore.isFeatureAvailable('5.1.0')"
                 v-model="cookie"
                 :historyKey="HistoryKey.COOKIE"
                 ref="cookieField"

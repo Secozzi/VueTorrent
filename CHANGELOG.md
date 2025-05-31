@@ -1,5 +1,172 @@
 # Changelog
 
+## [2.25.0](https://github.com/VueTorrent/VueTorrent/compare/v2.24.2...v2.25.0) (2025-05-23)
+
+### Features
+
+- **5.1:** append tracker from url to new downloads ([#2288](https://github.com/VueTorrent/VueTorrent/issues/2288))
+  ([5a3836d](https://github.com/VueTorrent/VueTorrent/commit/5a3836d7ae6182db3294685b73201ec962b12878))
+- **5.1:** fetch external IP from sync endpoint ([#2271](https://github.com/VueTorrent/VueTorrent/issues/2271))
+  ([d1834cf](https://github.com/VueTorrent/VueTorrent/commit/d1834cfc564dee45bc432c17b01f63470977586e))
+- **5.1:** Add cookies manager ([#2275](https://github.com/VueTorrent/VueTorrent/issues/2275))
+  ([2884f9c](https://github.com/VueTorrent/VueTorrent/commit/2884f9c17fa343e628622e34b2b2bf35bbad7bf1))
+- Add confirmation dialogs ([#2253](https://github.com/VueTorrent/VueTorrent/issues/2253))
+  ([5803d0d](https://github.com/VueTorrent/VueTorrent/commit/5803d0dbe821efa187b30be480e712275f28329e))
+- **backend:** Allows for manual update using "check new version" button ([#2307](https://github.com/VueTorrent/VueTorrent/issues/2307))
+  ([b3799b6](https://github.com/VueTorrent/VueTorrent/commit/b3799b6b6c39f7ca7ff06d9310f33197fce93fb8))
+- **Navbar:** Add confirmation when starting/stopping all torrents ([#2267](https://github.com/VueTorrent/VueTorrent/issues/2267))
+  ([cde8378](https://github.com/VueTorrent/VueTorrent/commit/cde8378346e891f87e8481496838267e06e2009d))
+- **Navbar:** Add options to hide filters ([#2269](https://github.com/VueTorrent/VueTorrent/issues/2269))
+  ([20be5b8](https://github.com/VueTorrent/VueTorrent/commit/20be5b86e7d0a62108a99988a9bc7c4d5b2f4183))
+
+### Improvements
+
+- Reduce build size ([#2290](https://github.com/VueTorrent/VueTorrent/issues/2290))
+  ([ea551fc](https://github.com/VueTorrent/VueTorrent/commit/ea551fcdbb68a7187132b44498c1f72ca015bcd3))
+
+## [2.24.2](https://github.com/VueTorrent/VueTorrent/compare/v2.24.1...v2.24.2) (2025-04-22)
+
+### Bug Fixes
+
+- **filters:** Update tag/tracker filters not being persisted ([#2243](https://github.com/VueTorrent/VueTorrent/issues/2243))
+  ([c05f935](https://github.com/VueTorrent/VueTorrent/commit/c05f9354a13512b88e12ca1abce5d4c3d42f86f6))
+
+## [2.24.1](https://github.com/VueTorrent/VueTorrent/compare/v2.24.0...v2.24.1) (2025-04-16)
+
+### Bug Fixes
+
+- **Dashboard:** Add min height for main container ([#2242](https://github.com/VueTorrent/VueTorrent/issues/2242))
+  ([90821c3](https://github.com/VueTorrent/VueTorrent/commit/90821c33eabe1eb2ac93d1ebf494a5588dc0c9ab))
+- **filters:** Fix trackers filter not working in some cases ([#2231](https://github.com/VueTorrent/VueTorrent/issues/2231))
+  ([49d9a52](https://github.com/VueTorrent/VueTorrent/commit/49d9a52c4902db576dba1054a1860bcce2f8acb0))
+- **Info:** Format data correctly ([#2241](https://github.com/VueTorrent/VueTorrent/issues/2241))
+  ([cbdfff8](https://github.com/VueTorrent/VueTorrent/commit/cbdfff87d138b52552021ea3283dc055874c6ac8))
+- **ratio:** Force 2 decimal places ([#2240](https://github.com/VueTorrent/VueTorrent/issues/2240))
+  ([dbbc37f](https://github.com/VueTorrent/VueTorrent/commit/dbbc37f4f5649278cc639097886ec7d5291edc18))
+
+## [2.24.0](https://github.com/VueTorrent/VueTorrent/compare/v2.23.1...v2.24.0) (2025-04-09)
+
+### Features
+
+- **Content/Filter:** Group extensions of same type ([#2204](https://github.com/VueTorrent/VueTorrent/issues/2204))
+  ([ddbafbe](https://github.com/VueTorrent/VueTorrent/commit/ddbafbef68a9a1fc770411e31f84e15486f142a0))
+- **Filters:** Handle exclude filtering for tags and trackers ([#2220](https://github.com/VueTorrent/VueTorrent/issues/2220))
+  ([c851d87](https://github.com/VueTorrent/VueTorrent/commit/c851d8777dc507fe5d9ea4846cd0d799853243cc))
+
+### Bug Fixes
+
+- **Content/Filter:** Handle extension casing ([#2208](https://github.com/VueTorrent/VueTorrent/issues/2208))
+  ([f5a6bda](https://github.com/VueTorrent/VueTorrent/commit/f5a6bdaf3eae5dedf0e1211ad3b41ed04cdc5aed))
+- **polyfills:** Downgraded 'toSorted' to 1.1.3 ([#2228](https://github.com/VueTorrent/VueTorrent/issues/2228))
+  ([ccb3f8c](https://github.com/VueTorrent/VueTorrent/commit/ccb3f8c2f65523e4a8d69bcd8af9a9d86ff11f4f))
+
+## [2.23.1](https://github.com/VueTorrent/VueTorrent/compare/v2.23.0...v2.23.1) (2025-03-18)
+
+### Bug Fixes
+
+- **SpeedGraph:** Set fixed tooltip ([#2198](https://github.com/VueTorrent/VueTorrent/issues/2198))
+  ([6d4d0c0](https://github.com/VueTorrent/VueTorrent/commit/6d4d0c0bfb3267b7d4145918fe9bafc840666ff6))
+
+### Improvements
+
+- **ActiveFilters:** Improve mouse events handling ([#2196](https://github.com/VueTorrent/VueTorrent/issues/2196))
+  ([85af361](https://github.com/VueTorrent/VueTorrent/commit/85af36106cf0c6018a88f291661bbcafc020af31))
+
+## [2.23.0](https://github.com/VueTorrent/VueTorrent/compare/v2.22.0...v2.23.0) (2025-03-05)
+
+### Features
+
+- **Settings:** Add option to collapse content items by default ([#2180](https://github.com/VueTorrent/VueTorrent/issues/2180))
+  ([f9da988](https://github.com/VueTorrent/VueTorrent/commit/f9da98880cbf67dfdbe4361ae2822be73c7246f6))
+
+### Bug Fixes
+
+- **AddTorrentDialog:** Remove default value for speed limits ([#2172](https://github.com/VueTorrent/VueTorrent/issues/2172))
+  ([3fc700c](https://github.com/VueTorrent/VueTorrent/commit/3fc700c57527a0f62ecdeef99d568bb66d059c91))
+- **backend:** Torrent properties not synced more than once ([#2163](https://github.com/VueTorrent/VueTorrent/issues/2163))
+  ([90c2a69](https://github.com/VueTorrent/VueTorrent/commit/90c2a693c66db35c6449aafafe8a23fc2f9cc39b))
+- **Settings:** Add warning message when using high pagination values ([#2176](https://github.com/VueTorrent/VueTorrent/issues/2176))
+  ([cbeb74e](https://github.com/VueTorrent/VueTorrent/commit/cbeb74eb0e7b385c8ddcfde04399dae3d1d390a4))
+
+## [2.22.0](https://github.com/VueTorrent/VueTorrent/compare/v2.21.0...v2.22.0) (2025-02-01)
+
+### Features
+
+- **Dashboard:** Add missing fields as dashboard items ([#2144](https://github.com/VueTorrent/VueTorrent/issues/2144))
+  ([a492884](https://github.com/VueTorrent/VueTorrent/commit/a4928841fe153a4ee9e31e03bc990ccf4365e198))
+
+### Bug Fixes
+
+- **backend:** Sort option isn't synced with table header ([#2128](https://github.com/VueTorrent/VueTorrent/issues/2128))
+  ([1e00212](https://github.com/VueTorrent/VueTorrent/commit/1e0021213b671337d273ba968607917872f32064))
+- **Overview:** Use correct selected size ([#2142](https://github.com/VueTorrent/VueTorrent/issues/2142))
+  ([84bfef0](https://github.com/VueTorrent/VueTorrent/commit/84bfef0808d89bf6880c87a3c6822917ba96c5d3))
+- **polyfills:** Add "toSorted" polyfill to support older browsers ([#2137](https://github.com/VueTorrent/VueTorrent/issues/2137))
+  ([d92197c](https://github.com/VueTorrent/VueTorrent/commit/d92197cbc2e5e5da38a412ce6e57323cd51fc305))
+- **Settings/Advanced:** Update unit conversions ([#2140](https://github.com/VueTorrent/VueTorrent/issues/2140))
+  ([db85dd5](https://github.com/VueTorrent/VueTorrent/commit/db85dd5d2ff195c0c0578fa8df9725e41e3f5d1b))
+- **Settings:** Update "delete torrent files afterwards" not working ([#2135](https://github.com/VueTorrent/VueTorrent/issues/2135))
+  ([3dbfd06](https://github.com/VueTorrent/VueTorrent/commit/3dbfd067f9e2855c0f66ee78f12a794014a1a788))
+
+### Improvements
+
+- **Content:** Spacebar takes selection into account ([#2141](https://github.com/VueTorrent/VueTorrent/issues/2141))
+  ([3bc6f06](https://github.com/VueTorrent/VueTorrent/commit/3bc6f06fae6430f1700f8de29eb767239885b02e))
+
+## [2.21.0](https://github.com/VueTorrent/VueTorrent/compare/v2.20.1...v2.21.0) (2025-01-05)
+
+### Features
+
+- Add OLED theme ([#2125](https://github.com/VueTorrent/VueTorrent/issues/2125))
+  ([02028c2](https://github.com/VueTorrent/VueTorrent/commit/02028c2954415cc9d050cb129482ff04463975ac))
+
+### Bug Fixes
+
+- **Dashboard:** Remove empty space when pagination is hidden ([#2120](https://github.com/VueTorrent/VueTorrent/issues/2120))
+  ([8dfdd1a](https://github.com/VueTorrent/VueTorrent/commit/8dfdd1a9cebdc4df3cd8f1dd6d40fd9532e1dde8))
+
+### Improvements
+
+- **backend:** Reduce network sync requests ([#2122](https://github.com/VueTorrent/VueTorrent/issues/2122))
+  ([e2492aa](https://github.com/VueTorrent/VueTorrent/commit/e2492aacbbcb2723828fcfb87b17d49afe6214c3))
+- **backend:** Sync display mode and sort ([#2116](https://github.com/VueTorrent/VueTorrent/issues/2116))
+  ([e0fc708](https://github.com/VueTorrent/VueTorrent/commit/e0fc70809d14c1f4ade69c5ab27b0e865e9b1c1c))
+
+## [2.20.1](https://github.com/VueTorrent/VueTorrent/compare/v2.20.0...v2.20.1) (2024-12-31)
+
+### Bug Fixes
+
+- **content:** Revert vue-concurrency breaking reactivity ([a5ca21c](https://github.com/VueTorrent/VueTorrent/commit/a5ca21c376b77dbc379e56bafa443d28ec0d5038))
+
+## [2.20.0](https://github.com/VueTorrent/VueTorrent/compare/v2.19.0...v2.20.0) (2024-12-31)
+
+### Features
+
+- **TorrentDetail:** Add torrent navigation buttons ([#2108](https://github.com/VueTorrent/VueTorrent/issues/2108))
+  ([488958d](https://github.com/VueTorrent/VueTorrent/commit/488958db10245ec5eac3edd3f170690667254972))
+
+### Bug Fixes
+
+- **Content:** Tree not expanding on load ([#2095](https://github.com/VueTorrent/VueTorrent/issues/2095))
+  ([8792e3d](https://github.com/VueTorrent/VueTorrent/commit/8792e3d1d85c429eafcf0ce882ea1e8bb28f99b8))
+- **Logs:** Prevent duplication on page refresh ([#2100](https://github.com/VueTorrent/VueTorrent/issues/2100))
+  ([4368af9](https://github.com/VueTorrent/VueTorrent/commit/4368af9e0122eec4f4e6da51fd60df61b4b8f8f1))
+- **paste:** Prevent blocking paste event on some text boxes ([#2112](https://github.com/VueTorrent/VueTorrent/issues/2112))
+  ([c761591](https://github.com/VueTorrent/VueTorrent/commit/c76159188bc777e670700f25332b3a8ef3622520))
+- **RSS:** Display feeds with empty articles ([#2096](https://github.com/VueTorrent/VueTorrent/issues/2096))
+  ([a6730ab](https://github.com/VueTorrent/VueTorrent/commit/a6730ab440c1a547d38db1a823ef31291616150d))
+
+### Improvements
+
+- **Dashboard:** Make scroll bars always visible ([#2109](https://github.com/VueTorrent/VueTorrent/issues/2109))
+  ([a5c0330](https://github.com/VueTorrent/VueTorrent/commit/a5c0330031f7d641186a88e4232a83ed9a3c8b4d))
+- **Dashboard:** Sort forced ETA 0s as infinity ([#2110](https://github.com/VueTorrent/VueTorrent/issues/2110))
+  ([f262eca](https://github.com/VueTorrent/VueTorrent/commit/f262eca144b568f5abebebd688baf0dae8d8b7d0))
+- Handle paste event globally ([#2099](https://github.com/VueTorrent/VueTorrent/issues/2099))
+  ([098ee25](https://github.com/VueTorrent/VueTorrent/commit/098ee25593ff1a483999e3b67bab68dc5a97a278))
+- **RightClick:** Add missing option for super seeding mode ([#2085](https://github.com/VueTorrent/VueTorrent/issues/2085))
+  ([d1f0303](https://github.com/VueTorrent/VueTorrent/commit/d1f0303a572d7ba5faa555f92aea1c32fae7d53f))
+
 ## [2.19.0](https://github.com/VueTorrent/VueTorrent/compare/v2.18.0...v2.19.0) (2024-12-09)
 
 ### Features
